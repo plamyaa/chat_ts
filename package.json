@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@types/es6-promise": "^3.3.0",
+    "js-cookie": "^3.0.1",
+    "parcel": "^2.5.0"
+  },
+  "devDependencies": {
+    "@types/js-cookie": "^3.0.2"
+  }
+}
