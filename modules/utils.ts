@@ -24,12 +24,12 @@ export function deleteCookie() : void {
     Cookies.remove("token");
 }
 
-export function tryParse(obj : string) : string | null{
+export function tryParse(obj : string) : string | undefined {
     try {
         return JSON.parse(obj);
     }
     catch (error : any) {
         alert("Error " + error.name + ':' + error.message + '\n' + error.stack);
-        return null;
+        return undefined;
     }
 }

@@ -2,7 +2,6 @@ import Cookies from 'js-cookie';
 import { showMessagesHistory } from './view';
 import { UI } from "./consts"
 import { tryStringify } from './utils';
-import { joinOnline } from './socket';
 
 export async function getResponse (myName : string) : Promise<void> {
     const json : string | null = tryStringify({ name: myName });
@@ -43,14 +42,13 @@ export async function receiveMessages() : Promise<void> {
         const response : Response = await fetch(UI.MESSAGES_API, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json;charset=utf-8'
+                'Content-Type': 'application/json;'
             }
         });
         const json : any =  await response.json();
         const messagesHistory : string | null = tryStringify(json.messages);
         localStorage.setItem("messagesHistory", `${messagesHistory}`);
         showMessagesHistory(0);
-        joinOnline();
         UI.CHAT.scrollTop += 10000;
     }
     catch(error : any) {

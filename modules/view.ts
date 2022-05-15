@@ -1,39 +1,47 @@
-import { grey, white } from "./consts";
+
 import Cookies from "js-cookie";
 import { configTime, differentEmail } from "./utils";
 import { UI } from "./consts";
 import { tryParse } from "./utils";
+import { Socket } from "./socket"
 
-export function showModal(show : HTMLBodyElement) : void {
-    UI.CONTAINER.style.display = "none";
-    show.style.display = "block";
-    document.body.style.background = grey;
+interface dataObject {
+    formValue : string, 
+    name : string, 
+    date : Date,
+    email : string,
 }
-export function hideModal(hide : HTMLBodyElement) : void {
-    UI.CONTAINER.style.display = "flex";
-    hide.style.display = "none";
-    document.body.style.background = white;
+
+export function createDataObject(messageData : any) : dataObject {
+    const data : dataObject = {
+        formValue : messageData.text, 
+        name :  messageData.user.name, 
+        date :  new Date(messageData.createdAt),
+        email :  messageData.user.email,
+    }
+    return data;
 }
-export function createMessage (formValue : string, name : string, date : Date, email : string) : HTMLDivElement {
-    const messageBlock : HTMLDivElement = document.createElement("div");
-    messageBlock.classList.add("chat-window__message");
-    if (differentEmail(email))
-        messageBlock.classList.add("message-he");
+
+export function createMessage (messageData : Object) : HTMLDivElement {
+    const data : dataObject = createDataObject(messageData);
+    const message: HTMLDivElement = document.createElement("div");
+    message.classList.add("chat-window__message");
+    if (differentEmail(data.email))
+        message.classList.add("message-he");
     else
-        messageBlock.classList.add("message-my");
-    messageBlock.append(UI.TEMPLATE.content.cloneNode(true));
-    messageBlock.firstElementChild!.textContent = name + ': ' + formValue;
-    messageBlock.lastElementChild!.textContent = configTime(date);
-    return messageBlock;
+        message.classList.add("message-my");
+    message.append(UI.TEMPLATE.content.cloneNode(true));
+    message.firstElementChild!.textContent = data.name + ': ' + data.formValue;
+    message.lastElementChild!.textContent = configTime(data.date);
+    return message;
 }
 
-export function showMessagesHistory(len : number) : void {
+export function showMessagesHistory(len : number) {
     const template : string | null = localStorage.getItem("messagesHistory");
-    const messagesHistory : any = tryParse(template!);
-    const lenOfMsg : number = messagesHistory.length - 1;
-    
+    const messages : any = tryParse(template!);
+    const lenOfMsg : number = messages.length - 1;
     for (let i : number = lenOfMsg - len; i > lenOfMsg - len - 20; i--) {
-        let messageWindow = createMessage(messagesHistory[i].text, messagesHistory[i].user.name, new Date(messagesHistory[i].createdAt), messagesHistory[i].user.email)
+        let messageWindow = createMessage(messages[i]);
         UI.CHAT_WINDOW.prepend(messageWindow); 
         UI.CHAT.scrollTop += messageWindow.clientHeight - 48;
     }
@@ -55,12 +63,14 @@ export function checkAutoriztion() : boolean {
         alert("Пожалуйста введите имя в настройках");
         return false;
     }
+    const socket = new Socket();
+    socket.listener();
     return true;
 }
 
 export function isAutorized() : boolean {
-    const email : string | undefined = Cookies.get("email");
-    if (!email) {
+    const token : string | undefined = Cookies.get("token");
+    if (!token) {
         UI.EXIT_BUTTON.textContent = "Войти";
         return false;
     }

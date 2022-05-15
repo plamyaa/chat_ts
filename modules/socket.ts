@@ -3,19 +3,32 @@ import { createMessage } from './view';
 import { UI } from './consts';
 import { tryStringify, tryParse } from './utils';
 
-let token = Cookies.get("token");
-let socket : WebSocket = new WebSocket(`${UI.SERVER_API + token}`);
-export function joinOnline() : void {
-    socket = new WebSocket(`${UI.SERVER_API + token}`);
-    socket.addEventListener("message", (event : any) => {
-        const messageData : any = tryParse(event.data);
-        UI.CHAT_WINDOW.append(createMessage(messageData.text, messageData.user.name, new Date(messageData.createdAt), messageData.user.email));
-        UI.CHAT.scrollTop += 100000;
-    });
-    socket.addEventListener("error", ((error : any) => alert(error.message)));
-    socket.addEventListener("close", joinOnline);
+interface SocketInterface {
+    socket : WebSocket;
+    token : string | undefined;
+    sendMessage(message : string) : void ;
 }
 
-export function sendMessage(message : string) : void {
-    socket.send(tryStringify({ text: `${message}` })!);
+export class Socket implements SocketInterface{
+    socket : WebSocket;
+    token : string | undefined;
+
+    constructor (){
+        this.token = Cookies.get("token");
+        this.socket = new WebSocket(`${UI.SERVER_API + this.token!}`);
+    }
+    public listener () : void {
+        this.socket.addEventListener("message", (event : any) => this.addMessage(event));
+        this.socket.addEventListener("error", ((error : any) => alert(error.message)));
+        this.socket.addEventListener("close", new Socket().listener);
+    }
+    public sendMessage(message : string) : void {
+        this.socket.send(tryStringify({ text: `${message}` })!);
+    }
+    private addMessage(event : any) : void {
+        const messageData : string | undefined = tryParse(event.data);
+        UI.CHAT_WINDOW.append(createMessage(messageData!));
+        UI.CHAT.scrollTop += 100000;
+    }
+
 }

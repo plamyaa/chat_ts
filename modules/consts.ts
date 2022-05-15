@@ -1,5 +1,6 @@
 export const grey : string = "#535353";
 export const white : string = "#FFF";
+
 export const UI = {
     CONTAINER : document.querySelector(".container-shape") as HTMLBodyElement,
     SETTINGS_BUTTON : document.querySelector(".buttons-above__settings") as HTMLButtonElement,
