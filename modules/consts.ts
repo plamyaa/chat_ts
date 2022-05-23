@@ -33,5 +33,5 @@ export const UI = {
     MODAL_CONFIRMATION : document.querySelector(".modal-confirmation") as HTMLBodyElement,
     USER_API : "https://mighty-cove-31255.herokuapp.com/api/user" as string,
     MESSAGES_API : "https://mighty-cove-31255.herokuapp.com/api/messages" as string,
-    SERVER_API : "ws://mighty-cove-31255.herokuapp.com/websockets?" as string,
+    SERVER_API : "wss://mighty-cove-31255.herokuapp.com/websockets?" as string,
 }
