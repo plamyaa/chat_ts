@@ -34,6 +34,7 @@ export class Autorization {
                 chat.showModal(UI.MODAL_CONFIRMATION);
                 sendEmail(email);
                 UI.MODAL.AUTORIZATION.TEXT.value = "";
+                alert("Проверьте спам")
             }
             else {
                 alert("Введите корректный email");
@@ -107,6 +108,7 @@ export class Settings {
                 Cookies.set("myName", name);
                 chat.hideModal(UI.MODAL_SETTINGS);
                 getResponse(name);
+                document.location.reload();
             }
             else {
                 alert("Введите имя");

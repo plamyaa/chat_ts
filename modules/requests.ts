@@ -50,6 +50,7 @@ export async function receiveMessages() : Promise<void> {
         localStorage.setItem("messagesHistory", `${messagesHistory}`);
         showMessagesHistory(0);
         UI.CHAT.scrollTop += 10000;
+        UI.PRELOADER.style.display = "none";
     }
     catch(error : any) {
         alert("Error " + error.name + ':' + error.message + '\n' + error.stack);

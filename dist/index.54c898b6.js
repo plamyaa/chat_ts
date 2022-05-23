@@ -547,107 +547,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
     }
 });
 
-},{"./modalInterface":"cyYR0","./requests":"10S0h","./view":"6y8y8","./socket":"dqoPl","./mainInterface":"9Jb7h"}],"cyYR0":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Autorization", ()=>Autorization
-);
-parcelHelpers.export(exports, "Confirmation", ()=>Confirmation
-);
-parcelHelpers.export(exports, "Settings", ()=>Settings
-);
-var _view = require("./view");
-var _consts = require("./consts");
-var _utils = require("./utils");
-var _jsCookie = require("js-cookie");
-var _jsCookieDefault = parcelHelpers.interopDefault(_jsCookie);
-var _requests = require("./requests");
-var _mainInterface = require("./mainInterface");
-class Autorization {
-    constructor(){
-        this.mainButton = _consts.UI.EXIT_BUTTON;
-        this.window = _consts.UI.MODAL_AUTORIZATION;
-        this.sendButton = _consts.UI.MODAL.AUTORIZATION.SEND_BUTTON;
-        this.exitButton = _consts.UI.MODAL.AUTORIZATION.EXIT;
-        this.toConfirmation = _consts.UI.ENTER_CODE;
-        this.input = _consts.UI.MODAL.AUTORIZATION.TEXT;
-    }
-    listener() {
-        const chat = new _mainInterface.Chat();
-        this.sendButton.addEventListener("click", ()=>{
-            if (_consts.UI.MODAL.AUTORIZATION.TEXT.value.includes("@")) {
-                const email = _consts.UI.MODAL.AUTORIZATION.TEXT.value;
-                _jsCookieDefault.default.set("email", email);
-                chat.hideModal(_consts.UI.MODAL_AUTORIZATION);
-                chat.showModal(_consts.UI.MODAL_CONFIRMATION);
-                _requests.sendEmail(email);
-                _consts.UI.MODAL.AUTORIZATION.TEXT.value = "";
-            } else alert("Введите корректный email");
-        });
-        this.mainButton.addEventListener("click", ()=>{
-            if (_view.isAutorized()) {
-                _utils.deleteCookie();
-                this.mainButton.textContent = "Войти";
-            }
-            chat.showModal(_consts.UI.MODAL_AUTORIZATION);
-        });
-        this.exitButton.addEventListener("click", ()=>chat.hideModal(_consts.UI.MODAL_AUTORIZATION)
-        );
-        this.toConfirmation.addEventListener("click", ()=>{
-            chat.hideModal(_consts.UI.MODAL_AUTORIZATION);
-            chat.showModal(_consts.UI.MODAL_CONFIRMATION);
-        });
-    }
-}
-class Confirmation {
-    constructor(){
-        this.window = _consts.UI.MODAL_CONFIRMATION;
-        this.sendButton = _consts.UI.MODAL.CONFIRMATION.SEND_BUTTON;
-        this.exitButton = _consts.UI.MODAL.CONFIRMATION.EXIT;
-        this.input = _consts.UI.MODAL.CONFIRMATION.TEXT;
-    }
-    listener() {
-        const chat = new _mainInterface.Chat();
-        this.sendButton.addEventListener("click", ()=>{
-            if (_consts.UI.MODAL.CONFIRMATION.TEXT.value) {
-                const token = _consts.UI.MODAL.CONFIRMATION.TEXT.value;
-                _jsCookieDefault.default.set("token", token);
-                chat.hideModal(_consts.UI.MODAL_CONFIRMATION);
-                chat.showModal(_consts.UI.MODAL_SETTINGS);
-            } else alert("Введите токен");
-            _consts.UI.MODAL.CONFIRMATION.TEXT.value = "";
-        });
-        this.exitButton.addEventListener("click", ()=>chat.hideModal(_consts.UI.MODAL_CONFIRMATION)
-        );
-    }
-}
-class Settings {
-    constructor(){
-        this.mainButton = _consts.UI.SETTINGS_BUTTON;
-        this.window = _consts.UI.MODAL_SETTINGS;
-        this.sendButton = _consts.UI.MODAL.SETTINGS.SEND_BUTTON;
-        this.exitButton = _consts.UI.MODAL.SETTINGS.EXIT;
-        this.input = _consts.UI.MODAL.SETTINGS.TEXT;
-    }
-    listener() {
-        const chat = new _mainInterface.Chat();
-        _consts.UI.MODAL.SETTINGS.SEND_BUTTON.addEventListener("click", ()=>{
-            if (_consts.UI.MODAL.SETTINGS.TEXT.value) {
-                const name = _consts.UI.MODAL.SETTINGS.TEXT.value;
-                _jsCookieDefault.default.set("myName", name);
-                chat.hideModal(_consts.UI.MODAL_SETTINGS);
-                _requests.getResponse(name);
-            } else alert("Введите имя");
-            _consts.UI.MODAL.SETTINGS.TEXT.value = "";
-        });
-        this.mainButton.addEventListener("click", ()=>chat.showModal(_consts.UI.MODAL_SETTINGS)
-        );
-        this.exitButton.addEventListener("click", ()=>chat.hideModal(_consts.UI.MODAL_SETTINGS)
-        );
-    }
-}
-
-},{"./view":"6y8y8","./consts":"fMcMF","js-cookie":"c8bBu","./requests":"10S0h","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./utils":"kxMhL","./mainInterface":"9Jb7h"}],"6y8y8":[function(require,module,exports) {
+},{"./view":"6y8y8","./socket":"dqoPl","./requests":"10S0h","./modalInterface":"cyYR0","./mainInterface":"9Jb7h"}],"6y8y8":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "createDataObject", ()=>createDataObject
@@ -736,6 +636,7 @@ parcelHelpers.export(exports, "UI", ()=>UI
 const grey = "#535353";
 const white = "#FFF";
 const UI = {
+    PRELOADER: document.querySelector('.preloader'),
     CONTAINER: document.querySelector(".container-shape"),
     SETTINGS_BUTTON: document.querySelector(".buttons-above__settings"),
     EXIT_BUTTON: document.querySelector(".buttons-above__exit"),
@@ -767,7 +668,7 @@ const UI = {
     MODAL_CONFIRMATION: document.querySelector(".modal-confirmation"),
     USER_API: "https://mighty-cove-31255.herokuapp.com/api/user",
     MESSAGES_API: "https://mighty-cove-31255.herokuapp.com/api/messages",
-    SERVER_API: "ws://mighty-cove-31255.herokuapp.com/websockets?"
+    SERVER_API: "wss://mighty-cove-31255.herokuapp.com/websockets?"
 };
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
@@ -967,7 +868,7 @@ class Socket {
     }
 }
 
-},{"js-cookie":"c8bBu","./consts":"fMcMF","./utils":"kxMhL","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./view":"6y8y8"}],"10S0h":[function(require,module,exports) {
+},{"js-cookie":"c8bBu","./view":"6y8y8","./consts":"fMcMF","./utils":"kxMhL","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"10S0h":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getResponse", ()=>getResponse
@@ -1028,12 +929,115 @@ async function receiveMessages() {
         localStorage.setItem("messagesHistory", `${messagesHistory}`);
         _view.showMessagesHistory(0);
         _consts.UI.CHAT.scrollTop += 10000;
+        _consts.UI.PRELOADER.style.display = "none";
     } catch (error) {
         alert("Error " + error.name + ':' + error.message + '\n' + error.stack);
     }
 }
 
-},{"js-cookie":"c8bBu","./consts":"fMcMF","./utils":"kxMhL","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./view":"6y8y8"}],"9Jb7h":[function(require,module,exports) {
+},{"js-cookie":"c8bBu","./view":"6y8y8","./consts":"fMcMF","./utils":"kxMhL","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"cyYR0":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Autorization", ()=>Autorization
+);
+parcelHelpers.export(exports, "Confirmation", ()=>Confirmation
+);
+parcelHelpers.export(exports, "Settings", ()=>Settings
+);
+var _view = require("./view");
+var _consts = require("./consts");
+var _utils = require("./utils");
+var _jsCookie = require("js-cookie");
+var _jsCookieDefault = parcelHelpers.interopDefault(_jsCookie);
+var _requests = require("./requests");
+var _mainInterface = require("./mainInterface");
+class Autorization {
+    constructor(){
+        this.mainButton = _consts.UI.EXIT_BUTTON;
+        this.window = _consts.UI.MODAL_AUTORIZATION;
+        this.sendButton = _consts.UI.MODAL.AUTORIZATION.SEND_BUTTON;
+        this.exitButton = _consts.UI.MODAL.AUTORIZATION.EXIT;
+        this.toConfirmation = _consts.UI.ENTER_CODE;
+        this.input = _consts.UI.MODAL.AUTORIZATION.TEXT;
+    }
+    listener() {
+        const chat = new _mainInterface.Chat();
+        this.sendButton.addEventListener("click", ()=>{
+            if (_consts.UI.MODAL.AUTORIZATION.TEXT.value.includes("@")) {
+                const email = _consts.UI.MODAL.AUTORIZATION.TEXT.value;
+                _jsCookieDefault.default.set("email", email);
+                chat.hideModal(_consts.UI.MODAL_AUTORIZATION);
+                chat.showModal(_consts.UI.MODAL_CONFIRMATION);
+                _requests.sendEmail(email);
+                _consts.UI.MODAL.AUTORIZATION.TEXT.value = "";
+                alert("Проверьте спам");
+            } else alert("Введите корректный email");
+        });
+        this.mainButton.addEventListener("click", ()=>{
+            if (_view.isAutorized()) {
+                _utils.deleteCookie();
+                this.mainButton.textContent = "Войти";
+            }
+            chat.showModal(_consts.UI.MODAL_AUTORIZATION);
+        });
+        this.exitButton.addEventListener("click", ()=>chat.hideModal(_consts.UI.MODAL_AUTORIZATION)
+        );
+        this.toConfirmation.addEventListener("click", ()=>{
+            chat.hideModal(_consts.UI.MODAL_AUTORIZATION);
+            chat.showModal(_consts.UI.MODAL_CONFIRMATION);
+        });
+    }
+}
+class Confirmation {
+    constructor(){
+        this.window = _consts.UI.MODAL_CONFIRMATION;
+        this.sendButton = _consts.UI.MODAL.CONFIRMATION.SEND_BUTTON;
+        this.exitButton = _consts.UI.MODAL.CONFIRMATION.EXIT;
+        this.input = _consts.UI.MODAL.CONFIRMATION.TEXT;
+    }
+    listener() {
+        const chat = new _mainInterface.Chat();
+        this.sendButton.addEventListener("click", ()=>{
+            if (_consts.UI.MODAL.CONFIRMATION.TEXT.value) {
+                const token = _consts.UI.MODAL.CONFIRMATION.TEXT.value;
+                _jsCookieDefault.default.set("token", token);
+                chat.hideModal(_consts.UI.MODAL_CONFIRMATION);
+                chat.showModal(_consts.UI.MODAL_SETTINGS);
+            } else alert("Введите токен");
+            _consts.UI.MODAL.CONFIRMATION.TEXT.value = "";
+        });
+        this.exitButton.addEventListener("click", ()=>chat.hideModal(_consts.UI.MODAL_CONFIRMATION)
+        );
+    }
+}
+class Settings {
+    constructor(){
+        this.mainButton = _consts.UI.SETTINGS_BUTTON;
+        this.window = _consts.UI.MODAL_SETTINGS;
+        this.sendButton = _consts.UI.MODAL.SETTINGS.SEND_BUTTON;
+        this.exitButton = _consts.UI.MODAL.SETTINGS.EXIT;
+        this.input = _consts.UI.MODAL.SETTINGS.TEXT;
+    }
+    listener() {
+        const chat = new _mainInterface.Chat();
+        _consts.UI.MODAL.SETTINGS.SEND_BUTTON.addEventListener("click", ()=>{
+            if (_consts.UI.MODAL.SETTINGS.TEXT.value) {
+                const name = _consts.UI.MODAL.SETTINGS.TEXT.value;
+                _jsCookieDefault.default.set("myName", name);
+                chat.hideModal(_consts.UI.MODAL_SETTINGS);
+                _requests.getResponse(name);
+                document.location.reload();
+            } else alert("Введите имя");
+            _consts.UI.MODAL.SETTINGS.TEXT.value = "";
+        });
+        this.mainButton.addEventListener("click", ()=>chat.showModal(_consts.UI.MODAL_SETTINGS)
+        );
+        this.exitButton.addEventListener("click", ()=>chat.hideModal(_consts.UI.MODAL_SETTINGS)
+        );
+    }
+}
+
+},{"./view":"6y8y8","./consts":"fMcMF","./utils":"kxMhL","js-cookie":"c8bBu","./requests":"10S0h","./mainInterface":"9Jb7h","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9Jb7h":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Chat", ()=>Chat

@@ -62,7 +62,7 @@
 
 .message__text {
   max-width: 240px;
-  word-break: break-all;
+  word-wrap: break-word;
   margin: 8px 8px 4px;
 }
 
@@ -229,6 +229,34 @@ button {
 
 input {
   border: 1px solid #000;
+}
+
+.preloader {
+  z-index: 1001;
+  background: #fff;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+.preloader__image {
+  width: 64px;
+  height: 64px;
+  background: url("Preloader_1.6ad0233b.gif") 50% no-repeat;
+  margin-top: -32px;
+  margin-left: -32px;
+  position: relative;
+  top: 50%;
+  left: 50%;
+}
+
+.loaded_hiding .preloader {
+  opacity: 0;
+  transition: opacity .3s;
+}
+
+.loaded .preloader {
+  display: none;
 }
 
 /*# sourceMappingURL=index.3a01df49.css.map */

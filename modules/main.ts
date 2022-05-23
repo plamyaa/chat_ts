@@ -9,7 +9,7 @@ const settings = new Settings();
 const autorization = new Autorization();
 const chat = new Chat();
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => { 
     chat.listener();
     autorization.listener();
     settings.listener();
